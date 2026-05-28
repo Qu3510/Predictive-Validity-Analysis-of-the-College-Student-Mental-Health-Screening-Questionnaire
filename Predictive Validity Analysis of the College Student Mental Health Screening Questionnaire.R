@@ -4298,3 +4298,48 @@ if (nrow(plot_data) > 0) {
          height = max(4, nrow(plot_data) * 0.3), dpi = 300)
   print(p_freq)
 }
+--------------弹性网络验证--------------------------
+# 安装包（第一次运行）
+install.packages("glmnet")
+install.packages("readxl")
+
+# 加载包
+library(glmnet)
+library(readxl)
+
+
+# 2. 自变量（22个，完全按你给的变量名）
+X <- as.matrix(data[, c(
+  "sensitivity",
+  "depression",
+  "compulsion",
+  "sleep_disturbance",
+  "anxiety",
+  "interpersonal_stress",
+  "paranoia",
+  "school_adjustment",
+  "somatization",
+  "suicide_ideation",
+  "psychosis",
+  "eating_disorder",
+  "social_phobia",
+  "dependence",
+  "internet_addiction",
+  "self_harm",
+  "employment_stress",
+  "relationship_stress",
+  "inferiority",
+  "hostility",
+  "impulsivity",
+  "academic_stress"
+)])
+
+# 3. 因变量
+Y <- data$risk_binary
+
+# 4. 运行弹性网络（alpha=0.5 标准）
+set.seed(123)
+cv.fit <- cv.glmnet(X, Y, family = "binomial", alpha = 0.5)
+
+# 5. 输出最终筛选结果
+coef(cv.fit, s = "lambda.min")                   
